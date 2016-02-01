@@ -18,6 +18,8 @@
 			scrollwheel: false,
 			center: center,
 			zoom: 4,
+			disableDefaultUI: true,
+			zoomControl: true,
 		};
 
 		$mapHolder.append('<div id="mapdragon" class="map"></div>');
