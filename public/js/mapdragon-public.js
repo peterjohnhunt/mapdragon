@@ -6,6 +6,11 @@
 		$mapHolder	= $('.mapdragon-map'),
 		$postHolder = $('.mapdragon-view');
 
+	var customMarkerURL  = false,
+		markerImage      = {},
+		markerImageLarge = {};
+
+
 	var map, geocoder, markers, center, user;
 
 	function initializeMap(){
@@ -31,6 +36,22 @@
         google.maps.event.addDomListener(window, 'resize', function() {
 		    centerMap();
 		});
+
+		customMarkerURL = $mapHolder.triggerHandler('image');
+		if (customMarkerURL){
+			markerImage = {
+				url: mapdragon_ajax_vars.theme + customMarkerURL,
+				scaledSize: new google.maps.Size(32, 32),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(16, 32)
+			};
+			markerImageLarge = {
+				url: mapdragon_ajax_vars.theme + customMarkerURL,
+				scaledSize: new google.maps.Size(48, 48),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(24, 48)
+			};
+		}
     }
 
 	function centerMap(location){
@@ -77,8 +98,46 @@
 
 		$featured.remove();
 
+		if (customMarkerURL){
+			$.each(markers, function(){
+				this.setIcon(markerImage);
+			});
+		}
+
 		centerMap(user);
 
+	}
+
+	function clearMap(location){
+
+		$.each(markers, function(){
+			this.setMap(null);
+		});
+		markers = [];
+
+		$postHolder.empty();
+
+		map.setZoom(10);
+		centerMap(location);
+
+	}
+
+	function addMarker(location){
+		var marker = new google.maps.Marker({
+			map: map,
+			position: location,
+		});
+		if (customMarkerURL){
+			marker.setIcon(markerImage);
+
+			marker.addListener('click', function(){
+				$.each(markers, function(){
+					this.setIcon(markerImage);
+				});
+				marker.setIcon(markerImageLarge);
+			});
+		}
+		return marker;
 	}
 
 	function getPosts(){
@@ -88,7 +147,6 @@
 		$form.serializeArray().map(function(x){formValuesJSON[x.name] = x.value;});
 
 		geocoder.geocode( { 'address': formValuesJSON.location}, function(results, status) {
-			console.log( status );
 			if (status == google.maps.GeocoderStatus.OK) {
 
 				user = {
@@ -108,37 +166,15 @@
 						distance: formValuesJSON.distance
 					},
 					dataType: 'json',
+					beforeSend: function(){
+						clearMap(user);
+					},
 					success: function( result ) {
-						$.each(markers, function(){
-							this.setMap(null);
-						});
-
-						var marker = new google.maps.Marker({
-							map: map,
-							position: user,
-							animation: google.maps.Animation.DROP,
-							icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-						});
-
-						marker.addListener('click', function(){
-							closeFeatured();
-						});
-
-						markers.push(marker);
-
-						centerMap(user);
-						map.setZoom(10);
-						$postHolder.empty();
-
 						$postHolder.append(result.data.html);
 						$postHolder.children().each(function(index){
 							var $post = $(this);
 
-							var marker = new google.maps.Marker({
-								map: map,
-								position: $post.data(),
-								animation: google.maps.Animation.DROP
-							});
+							var marker = addMarker($post.data());
 
 							marker.addListener('click', function(){
 								selectFeatured($post);
@@ -165,10 +201,6 @@
 
 		$form.submit(function(event){
 			event.preventDefault();
-			getPosts();
-		});
-
-		$form.find('select').change(function(event){
 			getPosts();
 		});
 	}

@@ -72,7 +72,7 @@ class mapdragon_Public {
 		wp_enqueue_script( 'google-maps', 'https://maps.googleapis.com/maps/api/js?', '', '', true );
 		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/min/mapdragon-public-min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/mapdragon-public.js', array( 'jquery' ), $this->version, true );
-		wp_localize_script( $this->plugin_name, 'mapdragon_ajax_vars', array('url' => admin_url( 'admin-ajax.php' ),'nonce' => wp_create_nonce( 'ajax-nonce' ),'assets' => plugin_dir_url( __FILE__ ).'/assets/'));
+		wp_localize_script( $this->plugin_name, 'mapdragon_ajax_vars', array('url' => admin_url( 'admin-ajax.php' ),'nonce' => wp_create_nonce( 'ajax-nonce' ),'assets' => plugin_dir_url( __FILE__ ).'/assets/','theme' => get_template_directory_uri().'/'));
 
 	}
 
