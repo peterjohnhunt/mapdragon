@@ -5,7 +5,33 @@
     _
 
   ░░░░░░░░░░░░░░░░░░░░░░░░*/
+  @mixin lineAnimation ($duration: 1s, $delay: 0s) {
+      -webkit-animation: dash $duration $delay linear infinite;
+      -moz-animation: dash $duration $delay linear infinite;
+      -o-animation: dash $duration $delay linear infinite;
+      animation: dash $duration $delay linear infinite;
 
+      @keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @-webkit-keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @-moz-keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @-o-keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+  }
 //▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 // _
 //▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -14,9 +40,46 @@
 }
 
 .mapdragon-map{
+    overflow: hidden;
+    position: relative;
     .map{
         height: 400px;
         width: 100%;
+    }
+    .loading{
+        display: none;
+        width: 1081px;
+        height: 400px;
+        margin-left: -540px;
+        margin-top: -200px;
+        position: absolute;
+      	top: 50%;
+        left: 50%;
+        overflow: visible;
+        z-index: 5;
+        g {
+            path{
+                stroke-dasharray: 20;
+                stroke-dashoffset: 40;
+                fill: none;
+                stroke: #000;
+                @include lineAnimation(1s,0s);
+            }
+            // &:first-of-type g path{
+            //     @for $i from 0 through 7{
+            //         &:nth-child(9n+#{$i}){
+            //             @include lineAnimation(5s,#{$i}s);
+            //         }
+            //     }
+            // }
+            // &:last-of-type g path{
+            //     @for $j from 0 through 6{
+            //         &:nth-child(8n+#{$j}){
+            //             @include lineAnimation(5s,#{$j}s);
+            //         }
+            //     }
+            // }
+        }
     }
 }
 
@@ -33,3 +96,4 @@
 // .gmnoprint div {
 //     background:none !important;
 // }
+

@@ -97,6 +97,9 @@ class mapdragon_Public {
 	        die ( 'Nope!' );
 	    }
 
+		$html = '';
+		$postIDs = array();
+
 		$name = ((isset($_REQUEST['name']) && $_REQUEST['name']) ? '_'.$_REQUEST['name'] : '');
 
 		$formValues = array();
@@ -104,21 +107,22 @@ class mapdragon_Public {
 
 		$posts = $this->get_nearby_posts($_REQUEST['lat'], $_REQUEST['lng'], $_REQUEST['distance']);
 
-		global $post;
-
-		ob_start();
-
 		if ($posts) {
-			foreach ($posts as $postArr) {
-				$post = get_post($postArr->ID);
+			$postIDs = array_map(function($post){ return $post->ID; }, $posts);
+
+			global $post;
+			ob_start();
+			foreach ($postIDs as $ID) {
+				$post = get_post($ID);
 				setup_postdata( $post );
 				get_template_part('layouts/retailer/loop');
 			}
+			$html = ob_get_clean();
+			wp_reset_postdata();
 		}
 
-	    $html = ob_get_clean();
 
-	    wp_send_json_success( array('html' => $html) );
+	    wp_send_json_success( array('html' => $html, 'posts' => $postIDs) );
 
 	    exit;
 	}
