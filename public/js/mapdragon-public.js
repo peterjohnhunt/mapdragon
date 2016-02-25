@@ -53,15 +53,15 @@
 		if (customMarkerURL){
 			markerImage = {
 				url: mapdragon_ajax_vars.theme + customMarkerURL,
-				scaledSize: new google.maps.Size(48, 48),
+				scaledSize: new google.maps.Size(36, 36),
 				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(24, 48)
+				anchor: new google.maps.Point(18, 36)
 			};
 			markerImageLarge = {
 				url: mapdragon_ajax_vars.theme + customMarkerURL,
-				scaledSize: new google.maps.Size(58, 58),
+				scaledSize: new google.maps.Size(46, 46),
 				origin: new google.maps.Point(0, 0),
-				anchor: new google.maps.Point(29, 58)
+				anchor: new google.maps.Point(23, 46)
 			};
 		}
     }
